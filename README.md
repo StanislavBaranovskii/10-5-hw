@@ -29,6 +29,16 @@
 *Приведите ответ в свободной форме.*
 ```
 ```
+**Балансировка нагрузки**
+это
+сервис, который занимается
+распределением нагрузки между
+пулом приложений, которые
+находятся за ним, стараясь
+максимизировать скорость и
+утилизировать ресурсы приложений.
+Также, гарантирует, что приложения
+не будут перегружены.
 
 ---
 
@@ -39,6 +49,22 @@
 *Приведите ответ в свободной форме.*
 ```
 ```
+**Round Robin**
+Запросы распределяются по пулу сервером последовательно.
+Если в пуле все сервера
+одинаковой мощности, то этот
+алгоритм скорее всего подойдет
+идеально.
+
+**Weighted Round Robin**
+Тот же round robin, но имеет дополнительное свойство — вес сервера. С его помощью мы можем
+указать балансировщику, сколько
+трафика отправлять на тот или иной
+сервер. Так сервера помощнее
+будут иметь больший вес
+и, соответственно, обрабатывать
+больше запросов, чем другие
+сервера.
 
 ---
 
@@ -47,9 +73,14 @@
 Установите и запустите Haproxy.
 
 *Приведите скриншот systemctl status haproxy, где будет видно, что Haproxy запущен.*
-```
-```
 
+```
+curl https://haproxy.debian.net/bernat.debian.org.gpg | sudo gpg --dearmor -o /usr/share/keyrings/haproxy.debian.net.gpg
+echo deb "[signed-by=/usr/share/keyrings/haproxy.debian.net.gpg]" http://haproxy.debian.net buster-backports-2.4 main | sudo tee /etc/apt/sources.list.d/haproxy.list > /dev/null
+sudo apt update
+sudo apt install -y haproxy=2.4.\*
+sudo systemctl status haproxy.service
+```
 
 ![Скриншот systemctl status haproxy](https://github.com/StanislavBaranovskii/10-5-hw/blob/main/img/10-5-3.png "Скриншот systemctl status haproxy")
 
@@ -60,9 +91,13 @@
 Установите и запустите Nginx.
 
 *Приведите скриншот systemctl status nginx, где будет видно, что Nginx запущен.*
-```
-```
 
+```
+sudo apt install -y nginx
+sudo systemctl status nginx
+sudo nano /etc/nginx/nginx.conf
+sudo nginx -t
+```
 
 ![Скриншот systemctl status nginx](https://github.com/StanislavBaranovskii/10-5-hw/blob/main/img/10-5-4.png "Скриншот systemctl status nginx")
 
@@ -76,10 +111,21 @@
 "nginx is configured correctly".
 
 *Приведите конфигурации настроенного Nginx сервиса и скриншот результата выполнения команды `curl http://localhost:8088/ping`.*
+
+**nginx.conf**
+В блочную директиву `http {}` добавляем следующий код:
+```
+server {
+	listen 8088;
+	location / {
+		return 200 "\nnginx is configured correctly\n\n";
+	}
+}
 ```
 
-```
-![Скриншот выполнения команды curl http://localhost:8088/ping](https://github.com/StanislavBaranovskii/10-5-hw/blob/main/img/10-5-5.png "Скриншот выполнения команды curl http://localhost:8088/ping")
+![Скриншот выполнения команды curl http://localhost:8088/ping](https://github.com/StanislavBaranovskii/10-5-hw/blob/main/img/10.5.5.png "Скриншот выполнения команды curl http://localhost:8088/ping")
+
+[**Файл nginx.conf**](https://github.com/StanislavBaranovskii/10-5-hw/blob/main/data/nginx.conf)
 
 ---
 
